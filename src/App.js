@@ -1,33 +1,40 @@
 import logo from './logo.svg';
 import './App.css';
-import { createDAVClient } from 'tsdav';
+import { DAVClient } from 'tsdav';
 import {useEffect} from 'react';
 
 function App() {
-
-  useEffect(() => {
-    (async () => {
-      const client = await createDAVClient({
+  const thisIsAfunk = (async () => {
+      const client = new DAVClient({
         serverUrl: 'https://apidata.googleusercontent.com/caldav/v2/',
         credentials: {
           tokenUrl: 'https://accounts.google.com/o/oauth2/token',
-          username: 'YOUR_EMAIL_ADDRESS',
-          refreshToken: 'YOUR_REFRESH_TOKEN_WITH_CALDAV_PERMISSION',
-          clientId: 'YOUR_CLIENT_ID',
-          clientSecret: 'YOUR_CLIENT_SECRET',
+          username: '',
+          refreshToken: '',
+          clientId: '',
+          clientSecret: '',
         },
         authMethod: 'Oauth',
         defaultAccountType: 'caldav',
       });
+
+      (async () => {
+        await client.login();
+      
+        const calendars = await client.fetchCalendars();
+      
+        const calendarObjects = await client.fetchCalendarObjects({
+          calendar: calendars[0],
+        });
+      })();
     
-      const calendars = await client.fetchCalendars();
+      // const calendars = await client.fetchCalendars();
     
-      const calendarObjects = await client.fetchCalendarObjects({
-        calendar: calendars[0],
-      });
-      console.log("calendarObjects", calendarObjects)
-    })();
-  }, [])
+      // const calendarObjects = await client.fetchCalendarObjects({
+      //   calendar: calendars[0],
+      // });
+      // console.log("calendarObjects", calendarObjects)
+  })()
 
   return (
     <div className="App">
